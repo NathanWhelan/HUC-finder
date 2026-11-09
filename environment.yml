@@ -1,0 +1,12 @@
+name: huc
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - geopandas>=1.0
+  - pyogrio>=0.10
+  - shapely>=2.0
+  - pyproj
+  - pandas>=2.2,<3
+  - openpyxl
+  - xlrd

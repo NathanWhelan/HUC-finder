@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "huc_lookup: assign USGS Hydrologic Unit Codes to specimen records"
+type: software
+authors:
+  - family-names: Whelan
+    given-names: Nathan
+    affiliation: The Ohio State University
+version: 1.0.0
+date-released: 2026-11-09
+license: MIT
+keywords:
+  - hydrologic unit code
+  - HUC
+  - watershed boundary dataset
+  - biodiversity
+  - specimen records
+references:
+  - type: data
+    title: "Watershed Boundary Dataset (WBD)"
+    authors:
+      - name: U.S. Geological Survey
+    url: "https://www.usgs.gov/national-hydrography/watershed-boundary-dataset"
