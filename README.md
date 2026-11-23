@@ -1,4 +1,4 @@
-# Distribution tools
+# Tools for downloading records and classifying by HUC
 
 Two scripts for specimen and occurrence records:
 
