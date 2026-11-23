@@ -40,7 +40,7 @@ This writes two files to `gbif_output/`:
 
 | Option | What it does |
 |---|---|
-| `--states OH IN` | Keep records whose coordinates fall in these states, including state waters (e.g. Lake Erie) |
+| `--states OH IN` | Postal code abbreviations. Keep records whose coordinates fall in these states, including state waters (e.g. Lake Erie) |
 | `--class Gastropoda` | Helps match names that are also used for plants, insects, etc. |
 | `--download` | Use for taxa with more than 100,000 records. Gives a DOI to cite. Needs a free gbif.org account |
 | `-o folder` | Choose the output folder |
