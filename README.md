@@ -1,12 +1,16 @@
-# huc_lookup.py
+# Distribution tools
 
-Adds USGS watershed codes (HUC8 by default) to a table of specimen records
-that have latitude and longitude.
+Two scripts for specimen and occurrence records:
+
+- **`gbif_pull.py`** downloads [GBIF](https://www.gbif.org) records that have
+  coordinates for a list of taxa. You can keep only records from chosen U.S. states.
+- **`huc_lookup.py`** adds USGS watershed codes (HUC8 by default) to any table
+  with latitude and longitude, including the output of `gbif_pull.py`.
 
 ## Setup (once)
 
-You need [conda](https://docs.conda.io/en/latest/miniconda.html) (Miniconda is fine).
-On Windows, type these in the Anaconda Prompt.
+Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html). On Windows,
+type the commands below in the Anaconda Prompt.
 
 ```bash
 conda env create -f environment.yml
@@ -14,61 +18,77 @@ conda activate huc
 python huc_lookup.py --download
 ```
 
-`--download` fetches the USGS watershed boundaries (2.8 GB) into `data/wbd/`
-next to the script. It needs about 6.5 GB of free disk while it unzips; 3.6 GB
-stays afterwards.
+`--download` gets the USGS watershed maps (2.8 GB) into `data/wbd/`. It needs
+6.5 GB of free disk while it unzips. `gbif_pull.py` does not need this step.
 
-## Run
+Run `conda activate huc` each time you open a new terminal.
+
+## gbif_pull.py: get GBIF records
+
+Make a text file with one taxon per line (e.g. `Physa acuta`), then:
 
 ```bash
-conda activate huc
-python huc_lookup.py my_records.txt
+python gbif_pull.py taxa.txt --states OH IN --class Gastropoda
 ```
 
-This writes `my_records_huc.txt`: your table, unchanged, with three columns added.
+This writes two files to `gbif_output/`:
+
+- `occurrences.csv`: the records.
+- `taxon_summary.csv`: how each name matched GBIF. **Check this file.** Misspelled,
+  unknown or ambiguous names are skipped, and the reason is given here. Synonyms
+  are converted to the accepted name, so records filed under old names are included.
+
+| Option | What it does |
+|---|---|
+| `--states OH IN` | Keep records whose coordinates fall in these states, including state waters (e.g. Lake Erie) |
+| `--class Gastropoda` | Helps match names that are also used for plants, insects, etc. |
+| `--download` | Use for taxa with more than 100,000 records. Gives a DOI to cite. Needs a free gbif.org account |
+| `-o folder` | Choose the output folder |
+
+`python gbif_pull.py --help` lists all options. The top of the script explains each one.
+
+## huc_lookup.py: add watersheds
+
+```bash
+python huc_lookup.py gbif_output/occurrences.csv
+```
+
+This writes `gbif_output/occurrences_huc.csv`: your table, unchanged, with three columns added.
 
 | Column | Example |
 |---|---|
 | `HUC8` | `06040002` |
 | `HUC8_name` | `Upper Duck` |
-| `huc_note` | Blank if all is well; otherwise why there is no HUC (e.g. `missing coordinates`) |
+| `huc_note` | Blank if all is well. Otherwise, why there is no HUC (e.g. `missing coordinates`) |
 
-It reads tab-delimited `.txt`, `.csv` and `.xlsx` files, with any other columns.
-The latitude and longitude columns are found from common headings
-(`Latitude`, `lat`, `decimalLatitude`, `Lat_DD`, `Longitude`, `long`, …).
-
-## Options
+Input can be `.txt` (tab-delimited), `.csv` or `.xlsx`. Coordinate columns are found
+by their usual names (`Latitude`, `lat`, `decimalLatitude`, …).
 
 | Option | What it does |
 |---|---|
 | `--levels 2,4,6,8,10,12` | Report other HUC levels (default `8`) |
-| `--summarize-by species` | Also write a table of each species × HUC with record counts (records placed by `--fix-lon-sign` or on a boundary are counted in separate columns) |
+| `--summarize-by species` | Also write a table of record counts for each species in each HUC |
 | `-o out.xlsx` | Choose the output file name and format |
 | `--lat-col NAME --lon-col NAME` | Name the coordinate columns if they aren't found |
 | `--fix-lon-sign` | Retry points with a positive longitude (probably a missing `-`) |
 
-## Good to know
+Good to know:
 
-- **Leading zeros:** opening a `.txt`/`.csv` output in Excel by double-clicking
-  drops the leading zero from HUC codes (`06040002` becomes `6040002`). Use
-  `-o out.xlsx` to get an Excel file instead.
-- **Coordinates:** decimal degrees (WGS84/NAD83). Degrees-minutes-seconds such as
-  `35°56'12"N` also work.
-- **Coverage:** the U.S. and its territories, plus the Canadian and Mexican parts
-  of shared watersheds.
+- Excel drops leading zeros from HUC codes in `.txt`/`.csv` files (`06040002`
+  becomes `6040002`). Use `-o out.xlsx` to avoid this.
+- Coordinates: decimal degrees (WGS84/NAD83) or degrees-minutes-seconds (`35°56'12"N`).
+- Covers the U.S. and its territories, plus the Canadian and Mexican parts of
+  shared watersheds.
 
 All the details are in [REFERENCE.md](REFERENCE.md).
 
-## Data source
+## Citing
 
-U.S. Geological Survey, Watershed Boundary Dataset (WBD).
-`data/wbd/WBD_SOURCE.txt` records the dataset date and download date for
-citing in a methods section.
-
-To cite this script, see [CITATION.cff](CITATION.cff) (GitHub's "Cite this
-repository" button).
+- **GBIF:** cite the DOI from `--download`. Records pulled without it have no DOI.
+- **Watersheds:** U.S. Geological Survey, Watershed Boundary Dataset (WBD).
+  `data/wbd/WBD_SOURCE.txt` records the dataset date for your methods section.
+- **These scripts:** see [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository" button).
 
 ## License
 
-MIT — see [LICENSE](LICENSE). The WBD data are a U.S. Government work in the
-public domain and are not included in this repository.
+MIT; see [LICENSE](LICENSE). The WBD data are public domain and are not included here.

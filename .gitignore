@@ -6,6 +6,8 @@ tests/fixtures/
 tests/output/
 
 # Script outputs
+gbif_output/
+us_state_boundaries/
 *_huc.txt
 *_huc.csv
 *_huc.tsv
