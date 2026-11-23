@@ -7,6 +7,14 @@ Two scripts for specimen and occurrence records:
 - **`huc_lookup.py`** adds USGS watershed codes (HUC8 by default) to any table
   with latitude and longitude, including the output of `gbif_pull.py`.
 
+## Known Issues
+There are several potential issues that are **not** a result of bugs in the scripts, but that users should be aware of. **You are responsible for determining whether GBIF records are reliable.**
+
+- Many georeferenced locations in GBIF are wrong. Often, coordinates are added many years after the collection date based on stated localities. Sometimes these localities are vague (e.g., Tennessee River), but they are still given coordinates that seem specific. Other times, the georeferenced coordinates refer to the wrong location (e.g., there are many Beaver Creeks, and common location names seem to fall prey to this issue. One issue I came across regularly is ANSP's georeferenced location for "Coosa River" and "Coosa River at Wetumpka" being in the Upper Alabama River drainage. **Please do not blindly trust records taken from GBIF**
+- Research grade records from iNaturalist need to be approached with an appropriate level of skepticism, depending on the species. Some groups (e.g., freshwater snails) are poorly studied and identifications can be extremely challenging. Just because an iNaturalist record is "research grade" does not mean the specimen is correctly identified.
+- Many research grade records from iNaturalist have obscured coordinates. This can place records in different river systems than where it was actually collected, which will make HUC8 designations misleading.
+- Records with coordinates on state borders may pass state-based filters. This is somewhat by design because many rivers form state borders. 
+
 ## Setup (once)
 
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html). On Windows,
